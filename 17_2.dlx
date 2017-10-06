@@ -1,0 +1,35 @@
+            .DATA
+            .TEXT   
+            .GLOBAL  MAIN
+MAIN :      ADDI    R4, R0, 10
+            J       SUM
+END :       TRAP    0
+
+SUM :       SUBI    R29, R29, 4
+            SW      0(R29), R4
+            SUBI    R29, R29, 4
+            SW      0(R29), R31
+            SUBI    R29, R29, 4
+            SW      0(R29), R16
+
+            BEQZ    R4, SUM_BASE
+
+            SUBI    R4, R4, 1
+            JAL     SUM
+
+            ADDI    R4, R4, 1
+            ADD     R16, R2, R4
+            ADDI    R2, R16, 0
+
+            J       SUM_END
+
+SUM_BASE :  ADDI    R2, R0, 0
+
+SUM_END :   LW      R16, 0(R29)
+            ADDI    R29, R29, 4
+            LW      R31, 0(R29)
+            ADDI    R29, R29, 4
+            LW      R4, 0(R29)
+            ADDI    R29, R29, 4
+            RET     
+

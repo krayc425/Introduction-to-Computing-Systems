@@ -1,0 +1,17 @@
+            .DATA
+            .TEXT   
+            .GLOBAL  MAIN
+		;r2 : result
+		;r1 : number
+MAIN :      ADDI    R1, R0, 2345
+            ADDI    R3, R0, 1
+LOOP :      BEQZ    R1, END
+            AND     R5, R1, R3
+            SRLI    R1, R1, 1
+            BEQZ    R5, LOOP
+            ADDI    R2, R2, 1
+            J       LOOP
+END :       TRAP    0
+
+
+

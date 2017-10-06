@@ -1,0 +1,27 @@
+            .DATA
+PROMPT :    .ASCIIZ "ENTER A CHAR:"
+STRING :    .ASCII  "AAABBC"
+            .BYTE   X04
+
+            .TEXT   
+            .GLOBAL  MAIN
+MAIN :      ADDI    R4, R0, PROMPT
+            TRAP    08
+            TRAP    06
+            TRAP    07
+            ADDI    R1, R0, STRING
+            ADD     R10, R10, R0
+LOOP :      LB      R2, 0(R1)
+            SEQI    R3, R2, X04
+            BNEZ    R3, END
+            SEQ     R3, R2, R4
+            ADDI    R1, R1, 1
+            BNEZ    R3, PLUS
+            J       LOOP
+PLUS :      ADDI    R10, R10, 1
+            J       LOOP
+END :       ADD     R4, R0, R10
+            ADDI    R4, R4, x30
+            TRAP    07
+            TRAP    00
+

@@ -1,0 +1,33 @@
+             .DATA	x30000000
+STRING :    .ASCII  "abcdefgh"
+            .BYTE   x04
+NEWLINE :   .BYTE   x0a
+SAVER31 :   .SPACE  4
+
+            .TEXT   
+            .GLOBAL  MAIN
+MAIN :      ANDI    R1, R1, 0
+LOOP1 :     LB      R4, STRING(R1)
+            SEQI    R5, R4, x04
+            BNEZ    R5, GOON
+            TRAP    07
+            ADDI    R1, R1, 1
+            J       LOOP1
+GOON :      LB      R4, NEWLINE(R0)
+            TRAP    07
+            JAL     TOUPPER
+END :       TRAP    00
+
+TOUPPER :   SW      SAVER31(R0), R31
+            ANDI    R1, R1, 0
+LOOP2 :     LB      R4, STRING(R1)
+            SEQI    R5, R4, x04
+            BNEZ    R5, BACK
+            SUBI    R4, R4, x20
+            TRAP    07
+            ADDI    R1, R1, 1
+            J       LOOP2
+BACK :      LW      R31, SAVER31(R0)
+            JR      R31
+
+

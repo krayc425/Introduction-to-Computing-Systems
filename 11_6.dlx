@@ -1,0 +1,27 @@
+            .DATA	x30000000
+NUMBERS :   .WORD   1,3,4,6,7,8,9,-1
+
+            .TEXT   
+            .GLOBAL  MAIN
+		;r3 : addr of nums
+		;r1 : count for ODD
+		;r2 : count for EVEN
+MAIN :      ADDI    R3, R0, NUMBERS
+            ADDI    R6, R3, 0
+LOOP :      LW      R5, 0(R6)
+            ADDI    R9, R5, 1
+            BEQZ    R9, END
+            ANDI    R8, R5, 01
+		; r6 points to the next number
+            ADDI    R6, R6, 4
+            BNEZ    R8, ODD
+            ADDI    R2, R2, 1
+            J       LOOP
+ODD :       ADDI    R1, R1, 1
+            J       LOOP
+END :       TRAP    00
+
+
+
+
+

@@ -1,0 +1,24 @@
+            .DATA
+            .TEXT   
+            .GLOBAL  MAIN
+MAIN :      ADDI    R9, R0, 29
+		;被除数
+            ADDI    R8, R0, 4
+		;除数
+            ADDI    R10, R0, 0
+		;商
+            ADDI    R11, R0, 0
+		;余数
+
+LOOP :      SUB     R2, R8, R9
+            SLEI    R3, R2, 0
+            BEQZ    R3, END
+            SUB     R9, R9, R8
+            ADDI    R10, R10, 1
+            J       LOOP
+END :       ADD     R11, R0, R9
+            TRAP    #00
+
+
+
+

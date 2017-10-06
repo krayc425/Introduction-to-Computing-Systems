@@ -1,0 +1,153 @@
+            .DATA	x30000000
+ASCII :     .SPACE  4
+LOOKUP10 :  .WORD   #0, #10, #20, #30, #40, #50, #60, #70, #80, #90
+LOOKUP100 : .WORD   #0, #100, #200, #300, #400, #500, #600, #700, #800, #900
+LOOKUP16 :  .WORD   #0, #16, #32, #48, #64, #80, #96, #112, #128, #144
+LOOKUP160 : .WORD   #0, #256, #512, #768, #1024, #1280, #1536, #1792, #2048, #2304
+SAVER1 :    .SPACE  4
+SAVER2 :    .SPACE  4
+SAVER3 :    .SPACE  4
+SAVER4 :    .SPACE  4
+SAVER5 :    .SPACE  4
+
+            .TEXT   x40000000
+            .GLOBAL  MAIN
+		;结果保存在R2
+MAIN :      ADDI    R1, R0, ASCII
+		;输入
+            TRAP    x06
+            TRAP    x07
+
+PUSH :      SEQI    R5, R4, x0a
+            BNEZ    R5, DONE
+            SB      0(R1), R4
+            ADDI    R1, R1, #1
+            TRAP    x06
+            TRAP    x07
+            J       PUSH
+
+DONE :      ADDI    R1, R0, ASCII
+            LW      R2, 0(R1)
+            SUBI    R1, R1, ASCII		;r1包括字符的个数
+            SEQI    R3, R2, #120
+            BNEZ    R3, A
+            JAL     TEN
+            TRAP    x00
+
+A :         JAL     SIXTEEN
+            TRAP    x00
+
+TEN :       SW      SAVER1(R0), R1
+            SW      SAVER3(R0), R3
+            SW      SAVER4(R0), R4
+            SW      SAVER5(R0), R5
+
+            ADDI    R2, R0, #0
+            BEQZ    R1, DONEA
+
+            ADDI    R4, R0, ASCII
+            ADD     R4, R4, R1
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+            ADD     R2, R2, R3
+
+            SUBI    R1, R1, #1
+            BEQZ    R1, DONEA
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+            ADDI    R5, R0, LOOKUP10
+            SIII    R3, R3, #2
+            ADD     R5, R5, R3
+            LW      R3, 0(R5)
+            ADD     R2, R2, R3
+
+            SUBI    R1, R1, #1
+            BEQZ    R1, DONEA
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+            ADDI    R5, R0, LOOKUP100
+            SIII    R3, R3, #2
+            ADD     R5, R5, R3
+            LW      R3, 0(R5)
+            ADD     R2, R2, R3
+
+DONEA :     LW      R1, SAVER1(R0)
+            LW      R3, SAVER1(R0)
+            LW      R4, SAVER1(R0)
+            LW      R5, SAVER1(R0)
+            JR      R31
+
+SIXTEEN :   SW      SAVER1(R0), R1
+            SW      SAVER3(R0), R3
+            SW      SAVER4(R0), R4
+            SW      SAVER5(R0), R5
+
+            ADDI    R2, R0, #0
+            SUBI    R1, R1, #1
+            BEQZ    R1, DONEB
+
+            ADDI    R4, R0, ASCII
+            ADD     R4, R4, R1
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+		;判断A到F
+            ADDI    R6, R6, #1
+            SLTI    R6, R3, #10
+            BEQZ    R6, X
+            SUBI    R3, R3, x7
+X :         ADD     R2, R2, R3
+
+            SUBI    R1, R1, #1
+            BEQZ    R1, DONEB
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+		;判断A到F
+            ADDI    R6, R6, #1
+            SLTI    R6, R3, #10
+            BEQZ    R6, Y
+            SUBI    R3, R3, x7
+Y :         ADD     R2, R2, R3
+
+            ADDI    R5, R0, LOOKUP16
+            SIII    R3, R3, #2
+            ADD     R5, R5, R3
+            LW      R3, 0(R5)
+            ADD     R2, R2, R3
+
+            SUBI    R1, R1, #1
+            BEQZ    R1, DONEB
+            SUBI    R4, R4, #1
+
+            LB      R3, 0(R4)
+            SUBI    R3, R3, x30
+		;判断A到F
+            ADDI    R6, R6, #1
+            SLTI    R6, R3, #10
+            BEQZ    R6, Z
+            SUBI    R3, R3, x7
+Z :         ADD     R2, R2, R3
+
+            ADDI    R5, R0, LOOKUP160
+            SIII    R3, R3, #2
+            ADD     R5, R5, R3
+            LW      R3, 0(R5)
+            ADD     R2, R2, R3
+
+DONEB :     LW      R1, SAVER1(R0)
+            LW      R3, SAVER1(R0)
+            LW      R4, SAVER1(R0)
+            LW      R5, SAVER1(R0)
+            JR      R31
+
+
+

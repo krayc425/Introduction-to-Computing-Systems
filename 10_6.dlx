@@ -1,0 +1,23 @@
+            .DATA
+            .TEXT   
+		;r8 = a
+		;r9 = b
+		;r1 = a*b
+		;r2 = 1
+            .GLOBAL  MAIN
+MAIN :      ADDI    R8, R8, #15
+            ADDI    R9, R9, #5
+            ADDI    R1, R0, 0
+            ADDI    R2, R0, X01
+            ADDI    R5, R0, 0
+LOOP :      BEQZ    R9, END
+            AND     R20, R9, R2
+            BEQZ    R20, YYYY
+            SLL     R3, R8, R5
+            ADD     R1, R1, R3
+            ANDI    R3, R3, 0
+YYYY :      SRLI    R9, R9, 1
+            ADDI    R5, R5, 1
+            J       LOOP
+END :       TRAP    00
+

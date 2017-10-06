@@ -1,0 +1,35 @@
+            .DATA	x30000000
+            .TEXT   x40000000
+            .GLOBAL  MAIN
+
+MAIN :      TRAP    x09
+
+            SLTI    R3, R4, #65
+            BNEZ    R3, ELSEA
+
+            SUBI    R4, R4, #55
+            J       DONEA
+ELSEA :     SUBI    R4, R4, #48
+            J       DONEA
+
+DONEA :     ADDI    R1, R4, #0
+            TRAP    x09
+
+            SLTI    R3, R4, #65
+            BNEZ    R3, ELSEB
+
+            SUBI    R4, R4, #55
+            J       DONEB
+ELSEB :     SUBI    R4, R4, #48
+            J       DONEB
+DONEB :     ADD     R4, R1, R4
+            ADDI    R4, R4, #48
+
+            SLTI    R3, R4, #58
+            BNEZ    R3, EXIT
+            ADDI    R4, R4, #7
+            J       EXIT
+
+EXIT :      TRAP    x07
+            TRAP    x00
+
